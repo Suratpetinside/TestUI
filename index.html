@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retail Station - Modern Clean System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <!-- Top Navigation -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 bg-red-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm shadow-red-200">S</div>
+                <span class="font-bold text-lg tracking-tight text-gray-900">Station<span class="text-red-600">POS</span></span>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <nav class="hidden md:flex space-x-1 bg-gray-100 p-1 rounded-xl">
+                <button onclick="switchTab('pos')" id="btn-pos" class="px-4 py-2 rounded-lg text-sm font-semibold bg-white text-red-600 shadow-sm transition">🛒 ขายหน้าร้าน (POS)</button>
+                <button onclick="switchTab('stock')" id="btn-stock" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 transition">📦 คลังสินค้า</button>
+                <button onclick="switchTab('audit')" id="btn-audit" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 transition">📋 ตรวจนับ</button>
+                <button onclick="switchTab('hr')" id="btn-hr" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 transition">👥 HR & กะงาน</button>
+                <button onclick="switchTab('dash')" id="btn-dash" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 transition">📊 แดชบอร์ด</button>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <div class="text-right hidden sm:block">
+                    <p class="text-xs font-medium text-gray-500">ผู้ใช้งาน</p>
+                    <p class="text-sm font-bold text-gray-800">คุณแม่ (Admin)</p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-red-50 text-red-600 flex items-center justify-center font-bold border border-red-100">แม่</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        
+        <!-- POS TAB -->
+        <div id="tab-pos" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Left: Quick Products Grid -->
+            <div class="lg:col-span-7 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-gray-900">สินค้าขายดี & สแกนด่วน</h2>
+                    <input type="text" placeholder="พิมพ์ชื่อสินค้าหรือยิงบาร์โค้ด..." class="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm w-64 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600">
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <button class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:border-red-200 hover:shadow-md transition text-left flex flex-col justify-between h-28 group">
+                        <span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-md w-fit">อาหารเม็ด</span>
+                        <div>
+                            <p class="font-bold text-gray-800 text-sm group-hover:text-red-600 transition">อาหารแมวโต 1กก.</p>
+                            <p class="text-base font-extrabold text-gray-900 mt-1">฿145</p>
+                        </div>
+                    </button>
+                    <button class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:border-red-200 hover:shadow-md transition text-left flex flex-col justify-between h-28 group">
+                        <span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-md w-fit">ขนมสัตว์</span>
+                        <div>
+                            <p class="font-bold text-gray-800 text-sm group-hover:text-red-600 transition">Toro Toro เแมวเลีย</p>
+                            <p class="text-base font-extrabold text-gray-900 mt-1">฿35</p>
+                        </div>
+                    </button>
+                    <button class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:border-red-200 hover:shadow-md transition text-left flex flex-col justify-between h-28 group">
+                        <span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-md w-fit">ของใช้</span>
+                        <div>
+                            <p class="font-bold text-gray-800 text-sm group-hover:text-red-600 transition">ทรายแมวเต้าหู้ 6L</p>
+                            <p class="text-base font-extrabold text-gray-900 mt-1">฿190</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right: Cart & Checkout -->
+            <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
+                <div>
+                    <h3 class="font-bold text-lg text-gray-900 mb-4 pb-2 border-b border-gray-100">ตะกร้าสินค้า</h3>
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between items-center text-sm">
+                            <div>
+                                <p class="font-bold text-gray-800">อาหารแมวโต 1กก.</p>
+                                <p class="text-xs text-gray-400">145 x 1</p>
+                            </div>
+                            <span class="font-bold text-gray-900">฿145</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <div>
+                                <p class="font-bold text-gray-800">Toro Toro แมวเลีย</p>
+                                <p class="text-xs text-gray-400">35 x 2</p>
+                            </div>
+                            <span class="font-bold text-gray-900">฿70</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4 pt-4 border-t border-gray-100">
+                    <div class="flex justify-between items-center text-lg font-bold">
+                        <span class="text-gray-600">ยอดรวมทั้งสิ้น</span>
+                        <span class="text-2xl text-red-600">฿215</span>
+                    </div>
+                    <button class="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg shadow-red-200 transition text-lg">
+                        ชำระเงิน (รับเงินสด / สแกนจ่าย)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock, Audit, HR, Dash Tabs (Placeholder for mockup structure) -->
+        <div id="tab-content-other" class="hidden bg-white p-8 rounded-2xl border border-gray-100 text-center py-20">
+            <p class="text-gray-400 font-medium">กำลังโหลดข้อมูลส่วนนี้...</p>
+        </div>
+
+    </main>
+
+    <script>
+        function switchTab(tabName) {
+            const tabs = ['pos', 'stock', 'audit', 'hr', 'dash'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`btn-${t}`);
+                if(btn) {
+                    if(t === tabName) {
+                        btn.className = "px-4 py-2 rounded-lg text-sm font-semibold bg-white text-red-600 shadow-sm transition";
+                    } else {
+                        btn.className = "px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 transition";
+                    }
+                }
+            });
+            // Simple toggle simulation
+            const posView = document.getElementById('tab-pos');
+            const otherView = document.getElementById('tab-content-other');
+            if(tabName === 'pos') {
+                posView.classList.remove('hidden');
+                otherView.classList.add('hidden');
+            } else {
+                posView.classList.add('hidden');
+                otherView.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
