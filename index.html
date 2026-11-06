@@ -3,142 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retail Station - Modern Clean System</title>
+    <title>สถานีสัตว์เลี้ยง & ค้าปลีก - ระบบจัดการร้านค้า</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        /* Custom scrollbar for clean look */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased">
+<body class="bg-[#F8FAFC] text-slate-800 antialiased selection:bg-red-100 selection:text-red-700">
 
     <!-- Top Navigation -->
-    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+    <header class="bg-white border-b border-slate-100 sticky top-0 z-50 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 h-18 flex items-center justify-between">
+            <!-- Brand / Logo -->
             <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 bg-red-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm shadow-red-200">S</div>
-                <span class="font-bold text-lg tracking-tight text-gray-900">Station<span class="text-red-600">POS</span></span>
+                <div class="w-10 h-10 bg-red-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-md shadow-red-200">S</div>
+                <div>
+                    <h1 class="font-bold text-base text-slate-900 tracking-tight leading-tight">สถานีสัตว์เลี้ยง <span class="text-xs font-semibold px-2 py-0.5 bg-red-50 text-red-600 rounded-full ml-1">Pro V2</span></h1>
+                    <p class="text-xs text-slate-400 font-medium">ระบบบริหารจัดการหน้าร้านอัจฉริยะ</p>
+                </div>
             </div>
             
-            <!-- Navigation Tabs -->
-            <nav class="hidden md:flex space-x-1 bg-gray-100 p-1 rounded-xl">
-                <button onclick="switchTab('pos')" id="btn-pos" class="px-4 py-2 rounded-lg text-sm font-semibold bg-white text-red-600 shadow-sm transition">🛒 ขายหน้าร้าน (POS)</button>
-                <button onclick="switchTab('stock')" id="btn-stock" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 transition">📦 คลังสินค้า</button>
-                <button onclick="switchTab('audit')" id="btn-audit" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 transition">📋 ตรวจนับ</button>
-                <button onclick="switchTab('hr')" id="btn-hr" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 transition">👥 HR & กะงาน</button>
-                <button onclick="switchTab('dash')" id="btn-dash" class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 transition">📊 แดชบอร์ด</button>
+            <!-- Navigation Tabs (Desktop & Tablet) -->
+            <nav class="hidden lg:flex space-x-1 bg-slate-100/80 p-1.5 rounded-2xl border border-slate-200/60">
+                <button onclick="switchTab('pos')" id="btn-pos" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-red-600 shadow-xs transition-all flex items-center space-x-2">
+                    <span>🛒</span><span>ขายหน้าร้าน (POS)</span>
+                </button>
+                <button onclick="switchTab('stock')" id="btn-stock" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-2">
+                    <span>📦</span><span>คลังสินค้า</span>
+                </button>
+                <button onclick="switchTab('audit')" id="btn-audit" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-2">
+                    <span>📋</span><span>ตรวจนับสินค้า</span>
+                </button>
+                <button onclick="switchTab('hr')" id="btn-hr" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-2">
+                    <span>⏱️</span><span>ลงเวลา HR</span>
+                </button>
+                <button onclick="switchTab('dash')" id="btn-dash" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-2">
+                    <span>📊</span><span>แดชบอร์ด</span>
+                </button>
             </nav>
 
-            <div class="flex items-center space-x-3">
-                <div class="text-right hidden sm:block">
-                    <p class="text-xs font-medium text-gray-500">ผู้ใช้งาน</p>
-                    <p class="text-sm font-bold text-gray-800">คุณแม่ (Admin)</p>
+            <!-- User Profile Widget -->
+            <div class="flex items-center space-x-3 bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-2xl">
+                <div class="w-8 h-8 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold text-sm">แม่</div>
+                <div class="text-left hidden sm:block">
+                    <p class="text-xs font-bold text-slate-800 leading-none">คุณแม่ (Admin)</p>
+                    <p class="text-[10px] text-emerald-600 font-semibold mt-1">● ออนไลน์ (สาขาหลัก)</p>
                 </div>
-                <div class="w-10 h-10 rounded-full bg-red-50 text-red-600 flex items-center justify-center font-bold border border-red-100">แม่</div>
             </div>
         </div>
     </header>
 
     <!-- Main Content Area -->
     <main class="max-w-7xl mx-auto px-4 py-6">
-        
-        <!-- POS TAB -->
-        <div id="tab-pos" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Left: Quick Products Grid -->
+
+        <!-- ==================== 1. POS TAB ==================== -->
+        <div id="section-pos" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Left: Quick Products Grid (65%) -->
             <div class="lg:col-span-7 space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-bold text-gray-900">สินค้าขายดี & สแกนด่วน</h2>
-                    <input type="text" placeholder="พิมพ์ชื่อสินค้าหรือยิงบาร์โค้ด..." class="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm w-64 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-3xl border border-slate-100 shadow-xs">
+                    <div>
+                        <h2 class="font-extrabold text-lg text-slate-900">รายการสินค้าด่วน</h2>
+                        <p class="text-xs text-slate-400">จิ้มเลือกสินค้าเพื่อเพิ่มลงตะกร้าทันที</p>
+                    </div>
+                    <div class="relative">
+                        <input type="text" placeholder="🔍 ยิงบาร์โค้ด หรือพิมพ์ค้นหา..." class="w-full sm:w-64 pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all">
+                    </div>
                 </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <button class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:border-red-200 hover:shadow-md transition text-left flex flex-col justify-between h-28 group">
-                        <span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-md w-fit">อาหารเม็ด</span>
+
+                <!-- Product Cards Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <!-- Item 1 -->
+                    <button class="bg-white p-4 rounded-3xl border border-slate-100 shadow-xs hover:border-red-200 hover:shadow-md transition-all text-left flex flex-col justify-between h-36 group cursor-pointer active:scale-95">
+                        <span class="text-[10px] font-bold text-red-600 bg-red-50 px-2.5 py-1 rounded-xl w-fit">อาหารเม็ด</span>
                         <div>
-                            <p class="font-bold text-gray-800 text-sm group-hover:text-red-600 transition">อาหารแมวโต 1กก.</p>
-                            <p class="text-base font-extrabold text-gray-900 mt-1">฿145</p>
+                            <p class="font-bold text-slate-800 text-sm group-hover:text-red-600 transition-colors line-clamp-1">อาหารแมวโต 1กก.</p>
+                            <p class="text-xs text-slate-400 mt-0.5">คงเหลือ: 42 ชิ้น</p>
                         </div>
+                        <p class="text-base font-black text-slate-900">฿145</p>
                     </button>
-                    <button class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:border-red-200 hover:shadow-md transition text-left flex flex-col justify-between h-28 group">
-                        <span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-md w-fit">ขนมสัตว์</span>
+                    <!-- Item 2 -->
+                    <button class="bg-white p-4 rounded-3xl border border-slate-100 shadow-xs hover:border-red-200 hover:shadow-md transition-all text-left flex flex-col justify-between h-36 group cursor-pointer active:scale-95">
+                        <span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-xl w-fit">ขนมสัตว์</span>
                         <div>
-                            <p class="font-bold text-gray-800 text-sm group-hover:text-red-600 transition">Toro Toro เแมวเลีย</p>
-                            <p class="text-base font-extrabold text-gray-900 mt-1">฿35</p>
+                            <p class="font-bold text-slate-800 text-sm group-hover:text-red-600 transition-colors line-clamp-1">Toro Toro แมวเลีย</p>
+                            <p class="text-xs text-slate-400 mt-0.5">คงเหลือ: 120 ชิ้น</p>
                         </div>
+                        <p class="text-base font-black text-slate-900">฿35</p>
                     </button>
-                    <button class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:border-red-200 hover:shadow-md transition text-left flex flex-col justify-between h-28 group">
-                        <span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-md w-fit">ของใช้</span>
+                    <!-- Item 3 -->
+                    <button class="bg-white p-4 rounded-3xl border border-slate-100 shadow-xs hover:border-red-200 hover:shadow-md transition-all text-left flex flex-col justify-between h-36 group cursor-pointer active:scale-95">
+                        <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-xl w-fit">ของใช้</span>
                         <div>
-                            <p class="font-bold text-gray-800 text-sm group-hover:text-red-600 transition">ทรายแมวเต้าหู้ 6L</p>
-                            <p class="text-base font-extrabold text-gray-900 mt-1">฿190</p>
+                            <p class="font-bold text-slate-800 text-sm group-hover:text-red-600 transition-colors line-clamp-1">ทรายแมวเต้าหู้ 6L</p>
+                            <p class="text-xs text-slate-400 mt-0.5">คงเหลือ: 15 ถุง</p>
                         </div>
+                        <p class="text-base font-black text-slate-900">฿190</p>
                     </button>
                 </div>
             </div>
 
-            <!-- Right: Cart & Checkout -->
-            <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
+            <!-- Right: Cart & Quick Checkout (35%) -->
+            <div class="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-100 shadow-xs flex flex-col justify-between">
                 <div>
-                    <h3 class="font-bold text-lg text-gray-900 mb-4 pb-2 border-b border-gray-100">ตะกร้าสินค้า</h3>
-                    <div class="space-y-3 mb-6">
-                        <div class="flex justify-between items-center text-sm">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+                        <h3 class="font-extrabold text-base text-slate-900">🛒 ตะกร้าสินค้า</h3>
+                        <button class="text-xs font-semibold text-red-500 hover:text-red-700 bg-red-50 px-2.5 py-1 rounded-xl">ล้างตะกร้า</button>
+                    </div>
+
+                    <!-- Cart Items List -->
+                    <div class="space-y-3 mb-6 max-h-64 overflow-y-auto pr-1">
+                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-2xl">
                             <div>
-                                <p class="font-bold text-gray-800">อาหารแมวโต 1กก.</p>
-                                <p class="text-xs text-gray-400">145 x 1</p>
+                                <p class="font-bold text-xs text-slate-800">อาหารแมวโต 1กก.</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">145 บาท × 1</p>
                             </div>
-                            <span class="font-bold text-gray-900">฿145</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-extrabold text-xs text-slate-900">฿145</span>
+                            </div>
                         </div>
-                        <div class="flex justify-between items-center text-sm">
+                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-2xl">
                             <div>
-                                <p class="font-bold text-gray-800">Toro Toro แมวเลีย</p>
-                                <p class="text-xs text-gray-400">35 x 2</p>
+                                <p class="font-bold text-xs text-slate-800">Toro Toro แมวเลีย</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">35 บาท × 2</p>
                             </div>
-                            <span class="font-bold text-gray-900">฿70</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-extrabold text-xs text-slate-900">฿70</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="space-y-4 pt-4 border-t border-gray-100">
-                    <div class="flex justify-between items-center text-lg font-bold">
-                        <span class="text-gray-600">ยอดรวมทั้งสิ้น</span>
+                <!-- Checkout Summary & Quick Cash Buttons -->
+                <div class="space-y-4 pt-4 border-t border-slate-100">
+                    <div class="flex justify-between items-center text-lg font-black">
+                        <span class="text-sm font-bold text-slate-500">ยอดรวมทั้งสิ้น</span>
                         <span class="text-2xl text-red-600">฿215</span>
                     </div>
-                    <button class="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg shadow-red-200 transition text-lg">
-                        ชำระเงิน (รับเงินสด / สแกนจ่าย)
+
+                    <!-- Quick Cash Action Buttons (Huge for Easy Touch) -->
+                    <div class="grid grid-cols-4 gap-2">
+                        <button class="py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition-all">พอดี</button>
+                        <button class="py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition-all">฿100</button>
+                        <button class="py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition-all">฿500</button>
+                        <button class="py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition-all">฿1000</button>
+                    </div>
+
+                    <!-- Main Pay Button -->
+                    <button class="w-full py-4 bg-red-600 hover:bg-red-700 active:scale-98 text-white font-extrabold rounded-2xl shadow-lg shadow-red-200 transition-all text-base flex items-center justify-center space-x-2">
+                        <span>💳 ชำระเงิน (เงินสด / สแกน QR)</span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Stock, Audit, HR, Dash Tabs (Placeholder for mockup structure) -->
-        <div id="tab-content-other" class="hidden bg-white p-8 rounded-2xl border border-gray-100 text-center py-20">
-            <p class="text-gray-400 font-medium">กำลังโหลดข้อมูลส่วนนี้...</p>
+        <!-- ==================== 2. STOCK TAB ==================== -->
+        <div id="section-stock" class="hidden bg-white p-6 rounded-3xl border border-slate-100 shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b border-slate-100">
+                <div>
+                    <h2 class="font-extrabold text-lg text-slate-900">📦 คลังสินค้า & สต็อกคงเหลือ</h2>
+                    <p class="text-xs text-slate-400">เช็กสถานะสินค้าและแจ้งเตือนสินค้าใกล้หมดอัตโนมัติ</p>
+                </div>
+                <button class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-2xl shadow-md shadow-red-200 transition-all">+ เพิ่มสินค้าใหม่</button>
+            </div>
+            <!-- Simple Stock Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-400 uppercase tracking-wider">
+                            <th class="p-3 rounded-l-xl">รหัส / ชื่อสินค้า</th>
+                            <th class="p-3">หมวดหมู่</th>
+                            <th class="p-3">ราคาขาย</th>
+                            <th class="p-3">คงเหลือ</th>
+                            <th class="p-3 rounded-r-xl">สถานะ</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 font-semibold text-slate-700">
+                        <tr>
+                            <td class="p-3 font-bold text-slate-900">#SK001 - อาหารแมวโต 1กก.</td>
+                            <td class="p-3 text-slate-400">อาหารสัตว์</td>
+                            <td class="p-3">฿145</td>
+                            <td class="p-3 text-emerald-600">42 ชิ้น</td>
+                            <td class="p-3"><span class="px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px]">ปกติ</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-bold text-slate-900">#SK002 - ทรายแมวเต้าหู้ 6L</td>
+                            <td class="p-3 text-slate-400">ของใช้</td>
+                            <td class="p-3">฿190</td>
+                            <td class="p-3 text-red-600 font-black">3 ถุง (ใกล้หมด)</td>
+                            <td class="p-3"><span class="px-2.5 py-1 bg-red-50 text-red-600 rounded-lg text-[10px]">เติมด่วน</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ==================== 3. AUDIT TAB ==================== -->
+        <div id="section-audit" class="hidden bg-white p-6 rounded-3xl border border-slate-100 shadow-xs space-y-4">
+            <div>
+                <h2 class="font-extrabold text-lg text-slate-900">📋 ตรวจนับสต็อกประจำวัน (Audit Checklist)</h2>
+                <p class="text-xs text-slate-400">ตรวจสอบความถูกต้องของสินค้าในแต่ละโซนชั้นวาง</p>
+            </div>
+            <div class="space-y-2">
+                <label class="flex items-center space-x-3 p-3 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition-all">
+                    <input type="checkbox" checked class="w-4 h-4 text-red-600 rounded border-slate-300 focus:ring-red-500">
+                    <span class="text-xs font-bold text-slate-800">โซน A: อาหารเม็ดสุนัข & แมว (นับครบแล้ว ตรงกัน)</span>
+                </label>
+                <label class="flex items-center space-x-3 p-3 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition-all">
+                    <input type="checkbox" class="w-4 h-4 text-red-600 rounded border-slate-300 focus:ring-red-500">
+                    <span class="text-xs font-bold text-slate-800">โซน B: ขนมและของเล่นแมวป่วน (รอดำเนินการตรวจสอบ)</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- ==================== 4. HR TAB ==================== -->
+        <div id="section-hr" class="hidden bg-white p-6 rounded-3xl border border-slate-100 shadow-xs space-y-4 text-center py-12">
+            <div class="w-16 h-16 bg-red-50 text-red-600 rounded-3xl flex items-center justify-center text-2xl mx-auto shadow-sm">⏱️</div>
+            <h2 class="font-extrabold text-lg text-slate-900">ลงเวลาเข้างานพนักงานหน้าร้าน</h2>
+            <p class="text-xs text-slate-400 max-w-sm mx-auto">แตะปุ่มด้านล่างเพื่อบันทึกเวลาเข้างานหรือเลิกงานประจำวันได้อย่างรวดเร็ว</p>
+            <button class="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-red-200 transition-all">
+                📌 บันทึกเวลาเข้างาน (Check-In)
+            </button>
+        </div>
+
+        <!-- ==================== 5. DASHBOARD TAB ==================== -->
+        <div id="section-dash" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-xs">
+                <p class="text-xs font-bold text-slate-400">ยอดขายรวมวันนี้</p>
+                <p class="text-2xl font-black text-slate-900 mt-2">฿12,450</p>
+                <p class="text-[10px] text-emerald-600 font-bold mt-1">▲ เพิ่มขึ้น 15% จากเมื่อวาน</p>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-xs">
+                <p class="text-xs font-bold text-slate-400">จำนวนบิลขายหน้าร้าน</p>
+                <p class="text-2xl font-black text-slate-900 mt-2">48 บิล</p>
+                <p class="text-[10px] text-slate-500 font-bold mt-1">เฉลี่ย ฿260 / บิล</p>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-xs">
+                <p class="text-xs font-bold text-slate-400">สินค้าใกล้หมดสต็อก</p>
+                <p class="text-2xl font-black text-red-600 mt-2">2 รายการ</p>
+                <p class="text-[10px] text-red-500 font-bold mt-1">ต้องสั่งซื้อเพิ่มด่วน</p>
+            </div>
         </div>
 
     </main>
 
+    <!-- Simple Tab Switching Script -->
     <script>
-        function switchTab(tabName) {
+        function switchTab(tabId) {
             const tabs = ['pos', 'stock', 'audit', 'hr', 'dash'];
             tabs.forEach(t => {
+                const section = document.getElementById(`section-${t}`);
                 const btn = document.getElementById(`btn-${t}`);
-                if(btn) {
-                    if(t === tabName) {
-                        btn.className = "px-4 py-2 rounded-lg text-sm font-semibold bg-white text-red-600 shadow-sm transition";
+                if(section && btn) {
+                    if(t === tabId) {
+                        section.classList.remove('hidden');
+                        btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-white text-red-600 shadow-xs transition-all flex items-center space-x-2";
                     } else {
-                        btn.className = "px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 hover:text-gray-900 transition";
+                        section.classList.add('hidden');
+                        btn.className = "px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-2";
                     }
                 }
             });
-            // Simple toggle simulation
-            const posView = document.getElementById('tab-pos');
-            const otherView = document.getElementById('tab-content-other');
-            if(tabName === 'pos') {
-                posView.classList.remove('hidden');
-                otherView.classList.add('hidden');
-            } else {
-                posView.classList.add('hidden');
-                otherView.classList.remove('hidden');
-            }
         }
     </script>
 </body>
