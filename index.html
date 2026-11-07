@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบบัญชีร้านค้า (Procurement & Expense Journal) - สถานีสัตว์เลี้ยง</title>
+    <title>ระบบบัญชีครบวงจร (Journal, P&L, Balance Sheet) - สถานีสัตว์เลี้ยง</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -18,17 +18,23 @@
             <div class="flex items-center space-x-3">
                 <span class="bg-white text-red-700 font-bold p-2 rounded-lg shadow text-xl">🐾 Pet's Station</span>
                 <div>
-                    <h1 class="text-xl font-bold">ระบบบัญชีอัตโนมัติ (Automated Accounting System)</h1>
-                    <p class="text-xs text-red-200">เชื่อมโยงระบบบัญชีซื้อสินค้าและบันทึกค่าใช้จ่ายตามหลักบัญชีคู่ (Double-Entry)</p>
+                    <h1 class="text-xl font-bold">ระบบบัญชีและงบการเงินอัตโนมัติ (Accounting & Financial Statements)</h1>
+                    <p class="text-xs text-red-200">บันทึกรายวัน, รายงานประจำงวด, งบกำไรขาดทุน และงบดุลตามหลักบัญชีคู่</p>
                 </div>
             </div>
-            <!-- Tab Navigation Switcher -->
-            <div class="flex bg-red-800 p-1 rounded-xl shadow-inner">
-                <button onclick="switchTab('procurement')" id="btn-procurement" class="px-4 py-2 text-xs font-bold rounded-lg transition duration-200 bg-white text-red-700 shadow">
-                    📦 บัญชีซื้อสินค้า (Inventory)
+            <!-- Main Tab Navigation Switcher -->
+            <div class="flex bg-red-800 p-1 rounded-xl shadow-inner flex-wrap gap-1">
+                <button onclick="switchMainTab('journal')" id="btn-journal" class="px-3 py-2 text-xs font-bold rounded-lg transition duration-200 bg-white text-red-700 shadow">
+                    📝 บันทึกรายวัน & สรุป
                 </button>
-                <button onclick="switchTab('expense')" id="btn-expense" class="px-4 py-2 text-xs font-bold rounded-lg transition duration-200 text-white hover:bg-red-700">
-                    💸 บัญชีค่าใช้จ่ายร้าน (Expenses)
+                <button onclick="switchMainTab('procurement')" id="btn-procurement" class="px-3 py-2 text-xs font-bold rounded-lg transition duration-200 text-white hover:bg-red-700">
+                    📦 ซื้อสินค้า (Inventory)
+                </button>
+                <button onclick="switchMainTab('expense')" id="btn-expense" class="px-3 py-2 text-xs font-bold rounded-lg transition duration-200 text-white hover:bg-red-700">
+                    💸 ค่าใช้จ่าย (Expenses)
+                </button>
+                <button onclick="switchMainTab('reports')" id="btn-reports" class="px-3 py-2 text-xs font-bold rounded-lg transition duration-200 text-white hover:bg-red-700">
+                    📊 งบการเงิน (P&L & Balance Sheet)
                 </button>
             </div>
         </div>
@@ -38,246 +44,358 @@
     <main class="max-w-7xl mx-auto px-4 py-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
         
         <!-------------------------------------------------------------------->
-        <!-- TAB 1: ระบบบัญชีซื้อสินค้า (Procurement Flow) -->
+        <!-- TAB 1 & Sub-tabs: บันทึกรายการ และ สมุดรายวัน -->
         <!-------------------------------------------------------------------->
-        <div id="tab-procurement" class="contents">
-            <!-- ฝั่งซ้าย: ฟอร์มซื้อสินค้า -->
-            <section class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col justify-between">
-                <div>
-                    <div class="flex items-center justify-between border-b border-red-100 pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
-                            <span>📝</span> บันทึกรายการซื้อสินค้าเข้า
-                        </h2>
-                        <span class="text-xs bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-medium">Audit-002 Flow</span>
-                    </div>
-
-                    <form id="purchaseForm" class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อผู้จำหน่าย (Supplier / Partner)</label>
-                            <select id="supplier" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
-                                <option value="บริษัท จรัญกิจ (Imperial Paw)">บริษัท จรัญกิจ (Imperial Paw)</option>
-                                <option value="ศรีไพศาลอาหารสัตว์">ศรีไพศาลอาหารสัตว์ (Wholesale)</option>
-                                <option value="Royal Canin Thailand">Royal Canin Thailand</option>
-                                <option value="Prowild & Bite of Wild Distributor">Prowild & Bite of Wild Distributor</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทรายการสินค้าซื้อเข้า</label>
-                            <select id="itemCategory" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
-                                <option value="อาหารเม็ด/อาหารกระป๋องแมว-สุนัข">อาหารเม็ด/อาหารกระป๋องแมว-สุนัข</option>
-                                <option value="ทรายแมว (Sunpo / อื่นๆ)">ทรายแมว (Sunpo / อื่นๆ)</option>
-                                <option value="เวชภัณฑ์และผลิตภัณฑ์ดูแลสัตว์ (Ceramectin)">เวชภัณฑ์และผลิตภัณฑ์ดูแลสัตว์ (Ceramectin)</option>
-                                <option value="อุปกรณ์สัตว์เลี้ยง/ของเล่น">อุปกรณ์สัตว์เลี้ยง/ของเล่น</option>
-                            </select>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">เลขที่ใบกำกับภาษี/INVOICE</label>
-                                <input type="text" id="invoiceNo" value="INV-2026-1105" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">ยอดเงินรวม (บาท)</label>
-                                <input type="number" id="amount" value="15000" class="w-full border border-gray-300 rounded-lg p-2 text-sm font-bold text-red-600 focus:ring-2 focus:ring-red-500 focus:outline-none">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">เงื่อนไขการชำระเงิน (Payment Term)</label>
-                            <select id="paymentTerm" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
-                                <option value="credit">ซื้อเชื่อ (Credit 30 วัน - บันทึกเจ้าหนี้การค้า)</option>
-                                <option value="cash">เงินสด / โอนชำระทันที (Cash / Bank Transfer)</option>
-                            </select>
-                        </div>
-
-                        <div class="bg-red-50 p-3 rounded-lg border border-red-200">
-                            <label class="flex items-center space-x-2 text-sm text-red-900 font-medium cursor-pointer">
-                                <input type="checkbox" id="auditCheck" checked class="w-4 h-4 text-red-600 rounded border-red-300 focus:ring-red-500">
-                                <span>ตรวจสอบเอกสารและใบส่งของถูกต้องตามระบบ Audit (Match PO & Invoice)</span>
-                            </label>
-                        </div>
-                    </form>
+        <div id="view-input-section" class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col justify-between">
+            
+            <!-- Sub-form Procurement -->
+            <div id="form-procurement-container">
+                <div class="flex items-center justify-between border-b border-red-100 pb-3 mb-4">
+                    <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
+                        <span>📦</span> บันทึกรายการซื้อสินค้าเข้า
+                    </h2>
+                    <span class="text-xs bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-medium">Audit-002</span>
                 </div>
-
+                <form id="purchaseForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อผู้จำหน่าย (Supplier)</label>
+                        <select id="supplier" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            <option value="บริษัท จรัญกิจ (Imperial Paw)">บริษัท จรัญกิจ (Imperial Paw)</option>
+                            <option value="ศรีไพศาลอาหารสัตว์">ศรีไพศาลอาหารสัตว์ (Wholesale)</option>
+                            <option value="Royal Canin Thailand">Royal Canin Thailand</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทสินค้าซื้อเข้า</label>
+                        <select id="itemCategory" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            <option value="อาหารเม็ด/อาหารกระป๋องแมว-สุนัข">อาหารเม็ด/อาหารกระป๋องแมว-สุนัข</option>
+                            <option value="ทรายแมว (Sunpo / อื่นๆ)">ทรายแมว (Sunpo / อื่นๆ)</option>
+                            <option value="เวชภัณฑ์และผลิตภัณฑ์ดูแลสัตว์">เวชภัณฑ์และผลิตภัณฑ์ดูแลสัตว์</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">เลขที่ Invoice</label>
+                            <input type="text" id="invoiceNo" value="INV-2026-1105" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ยอดเงินรวม (บาท)</label>
+                            <input type="number" id="amount" value="15000" class="w-full border border-gray-300 rounded-lg p-2 text-sm font-bold text-red-600 focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">เงื่อนไขการชำระเงิน</label>
+                        <select id="paymentTerm" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            <option value="credit">ซื้อเชื่อ (Credit 30 วัน - เจ้าหนี้การค้า)</option>
+                            <option value="cash">เงินสด / โอนชำระทันที</option>
+                        </select>
+                    </div>
+                    <div class="bg-red-50 p-3 rounded-lg border border-red-200">
+                        <label class="flex items-center space-x-2 text-sm text-red-900 font-medium cursor-pointer">
+                            <input type="checkbox" id="auditCheck" checked class="w-4 h-4 text-red-600 rounded border-red-300">
+                            <span>ตรวจสอบเอกสารและใบส่งของถูกต้อง (Audit Passed)</span>
+                        </label>
+                    </div>
+                </form>
                 <div class="mt-6 pt-4 border-t border-gray-100">
                     <button onclick="processPurchaseEntry()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-200 flex items-center justify-center gap-2">
-                        <span>✨</span> กดลงบัญชีซื้อสินค้า (Post to Journal)
+                        <span>✨</span> บันทึกซื้อสินค้าลงสมุดรายวัน
                     </button>
                 </div>
-            </section>
-        </div>
+            </div>
 
-        <!-------------------------------------------------------------------->
-        <!-- TAB 2: ระบบบัญชีค่าใช้จ่ายในร้าน (Expense Flow ตาม Flowchart ใหม่) -->
-        <!-------------------------------------------------------------------->
-        <div id="tab-expense" class="contents hidden">
-            <!-- ฝั่งซ้าย: ฟอร์มบันทึกค่าใช้จ่าย -->
-            <section class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col justify-between">
-                <div>
-                    <div class="flex items-center justify-between border-b border-red-100 pb-3 mb-4">
-                        <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
-                            <span>💸</span> บันทึกค่าใช้จ่ายในร้าน (Operating Expenses)
-                        </h2>
-                        <span class="text-xs bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-medium">Expense Flow</span>
-                    </div>
-
-                    <form id="expenseForm" class="space-y-4">
-                        <!-- เลือกประเภทรายการค่าใช้จ่ายตาม Flowchart รูปใหม่ -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">เลือกประเภทค่าใช้จ่าย (Expense Category)</label>
-                            <select id="expenseCategory" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
-                                <option value="ค่าไฟฟ้า (Electricity Expense)">ค่าไฟฟ้า (Electricity Expense)</option>
-                                <option value="ค่าน้ำ (Water Expense)">ค่าน้ำ (Water Expense)</option>
-                                <option value="ค่าเช่าที่ (Rental Expense)">ค่าเช่าที่ (Rental Expense)</option>
-                                <option value="ค่าอินเตอร์เน็ต (Internet Expense)">ค่าอินเตอร์เน็ต (Internet Expense)</option>
-                                <option value="ค่าระบบ (System Software / Tech Expense)">ค่าระบบ (System Software / Tech Expense)</option>
-                                <option value="สวัสดิการพนักงาน (Staff Welfare)">สวัสดิการพนักงาน (Staff Welfare)</option>
-                                <option value="อุปกรณ์ตกแต่งร้าน (Store Decoration)">อุปกรณ์ตกแต่งร้าน (Store Decoration)</option>
-                                <option value="อุปกรณ์สำนักงาน (Office Supplies)">อุปกรณ์สำนักงาน (Office Supplies)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">รายละเอียด / หมายเหตุค่าใช้จ่าย</label>
-                            <input type="text" id="expenseDesc" value="ค่าบริการระบบ POS และ Cloud ประจำเดือน" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">เลขที่ใบเสร็จ/ใบกำกับภาษี</label>
-                                <input type="text" id="expRefNo" value="EXP-2026-089" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">ยอดเงิน (บาท)</label>
-                                <input type="number" id="expAmount" value="2500" class="w-full border border-gray-300 rounded-lg p-2 text-sm font-bold text-red-600 focus:ring-2 focus:ring-red-500 focus:outline-none">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">วิธีชำระเงิน (Payment Method)</label>
-                            <select id="expPaymentMethod" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
-                                <option value="cash">เงินสด / เงินฝากธนาคาร (Cash / Bank Transfer)</option>
-                                <option value="credit">เจ้าหนี้อื่น / ค้างจ่าย (Other Accounts Payable)</option>
-                            </select>
-                        </div>
-
-                        <div class="bg-red-50 p-3 rounded-lg border border-red-200">
-                            <label class="flex items-center space-x-2 text-sm text-red-900 font-medium cursor-pointer">
-                                <input type="checkbox" id="expAuditCheck" checked class="w-4 h-4 text-red-600 rounded border-red-300 focus:ring-red-500">
-                                <span>ตรวจสอบความถูกต้องของรายการและหลักฐานการจ่าย (Audit Review Passed)</span>
-                            </label>
-                        </div>
-                    </form>
+            <!-- Sub-form Expense (Hidden by default unless switched) -->
+            <div id="form-expense-container" class="hidden">
+                <div class="flex items-center justify-between border-b border-red-100 pb-3 mb-4">
+                    <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
+                        <span>💸</span> บันทึกค่าใช้จ่ายในร้าน
+                    </h2>
+                    <span class="text-xs bg-red-50 text-red-600 px-2.5 py-1 rounded-full font-medium">Expense Flow</span>
                 </div>
-
+                <form id="expenseForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทค่าใช้จ่าย</label>
+                        <select id="expenseCategory" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            <option value="ค่าไฟฟ้า">ค่าไฟฟ้า (Electricity)</option>
+                            <option value="ค่าน้ำ">ค่าน้ำ (Water)</option>
+                            <option value="ค่าเช่าที่">ค่าเช่าที่ (Rental)</option>
+                            <option value="ค่าอินเตอร์เน็ต">ค่าอินเตอร์เน็ต (Internet)</option>
+                            <option value="ค่าระบบ">ค่าระบบ (Software / POS)</option>
+                            <option value="สวัสดิการพนักงาน">สวัสดิการพนักงาน (Staff Welfare)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">รายละเอียด</label>
+                        <input type="text" id="expenseDesc" value="ค่าบริการระบบ POS ประจำเดือน" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">เลขที่ใบเสร็จ</label>
+                            <input type="text" id="expRefNo" value="EXP-2026-089" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ยอดเงิน (บาท)</label>
+                            <input type="number" id="expAmount" value="2500" class="w-full border border-gray-300 rounded-lg p-2 text-sm font-bold text-red-600 focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">วิธีชำระเงิน</label>
+                        <select id="expPaymentMethod" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            <option value="cash">เงินสด / โอนชำระทันที</option>
+                            <option value="credit">เจ้าหนี้อื่น / ค้างจ่าย</option>
+                        </select>
+                    </div>
+                    <div class="bg-red-50 p-3 rounded-lg border border-red-200">
+                        <label class="flex items-center space-x-2 text-sm text-red-900 font-medium cursor-pointer">
+                            <input type="checkbox" id="expAuditCheck" checked class="w-4 h-4 text-red-600 rounded border-red-300">
+                            <span>ตรวจสอบความถูกต้องเรียบร้อย (Audit Passed)</span>
+                        </label>
+                    </div>
+                </form>
                 <div class="mt-6 pt-4 border-t border-gray-100">
                     <button onclick="processExpenseEntry()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-200 flex items-center justify-center gap-2">
-                        <span>✨</span> กดลงบัญชีค่าใช้จ่าย (Post Expense Journal)
+                        <span>✨</span> บันทึกค่าใช้จ่ายลงสมุดรายวัน
                     </button>
                 </div>
-            </section>
+            </div>
+
         </div>
 
         <!-------------------------------------------------------------------->
-        <!-- ฝั่งขวา: ตารางสมุดรายวันทั่วไป (ใช้ร่วมกันทั้ง 2 ระบบ) -->
+        <!-- ฝั่งขวา: พื้นที่แสดงผลตารางสมุดรายวัน หรือ งบการเงิน -->
         <!-------------------------------------------------------------------->
-        <section class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col">
-            <div class="flex items-center justify-between border-b border-red-100 pb-3 mb-4">
-                <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
-                    <span>📊</span> สมุดรายวันทั่วไป (Debit / Credit Mapping)
-                </h2>
-                <span id="entryStatus" class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full font-semibold border border-emerald-200">พร้อมบันทึกรายการ</span>
-            </div>
-
-            <!-- ตารางแสดงผลเดบิต เครดิต -->
-            <div class="overflow-x-auto flex-grow max-h-[480px]">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-red-50 text-red-800 text-xs uppercase tracking-wider font-semibold sticky top-0">
-                            <th class="p-3 rounded-l-lg">วันที่ / รายการ</th>
-                            <th class="p-3">บัญชีแยกประเภท (Accounts)</th>
-                            <th class="p-3 text-right">เดบิต (Debit)</th>
-                            <th class="p-3 text-right rounded-r-lg">เครดิต (Credit)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="journalTableBody" class="text-sm divide-y divide-gray-100">
-                        <!-- Mockup Initial Data 1: ซื้อสินค้า -->
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-3">
-                                <div class="font-semibold text-gray-800">07 พ.ย. 2026</div>
-                                <div class="text-xs text-gray-500">ซื้อสินค้า: บริษัท จรัญกิจ (INV-2026-1105)</div>
-                            </td>
-                            <td class="p-3">
-                                <div class="font-medium text-red-700">1. สินค้าคงเหลือ (Inventory)</div>
-                                <div class="text-xs text-gray-500 pl-4">เครดิต: เจ้าหนี้การค้า (Accounts Payable)</div>
-                            </td>
-                            <td class="p-3 text-right font-bold text-gray-900">
-                                15,000.00<br>
-                                <span class="text-xs text-transparent">-</span>
-                            </td>
-                            <td class="p-3 text-right font-bold text-gray-900">
-                                <span class="text-xs text-transparent">-</span><br>
-                                15,000.00
-                            </td>
-                        </tr>
-                        <!-- Mockup Initial Data 2: ค่าใช้จ่าย -->
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-3">
-                                <div class="font-semibold text-gray-800">07 พ.ย. 2026</div>
-                                <div class="text-xs text-gray-500">ค่าระบบ: ค่าบริการระบบ POS (EXP-2026-089)</div>
-                            </td>
-                            <td class="p-3">
-                                <div class="font-medium text-red-700">1. ค่าระบบ (Software & Tech Expense)</div>
-                                <div class="text-xs text-gray-500 pl-4">เครดิต: เงินสด / เงินฝากธนาคาร (Cash / Bank)</div>
-                            </td>
-                            <td class="p-3 text-right font-bold text-gray-900">
-                                2,500.00<br>
-                                <span class="text-xs text-transparent">-</span>
-                            </td>
-                            <td class="p-3 text-right font-bold text-gray-900">
-                                <span class="text-xs text-transparent">-</span><br>
-                                2,500.00
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- สรุปผลรวมเดบิต-เครดิต -->
-            <div class="mt-4 bg-gray-50 p-4 rounded-xl border border-gray-200 flex justify-between items-center text-sm font-bold">
-                <span class="text-gray-700">ยอดรวมรายการล่าสุด (Balanced Check):</span>
-                <div class="flex gap-6">
-                    <span class="text-red-700">Dr: <span id="totalDebit">2,500.00</span> ฿</span>
-                    <span class="text-red-700">Cr: <span id="totalCredit">2,500.00</span> ฿ (Balanced ✓)</span>
+        <div class="lg:col-span-7 flex flex-col gap-4">
+            
+            <!-- ส่วนแสดงสมุดรายวันทั่วไป (Journal View) -->
+            <section id="section-journal" class="bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col flex-grow">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-red-100 pb-3 mb-4 gap-2">
+                    <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
+                        <span>📊</span> สมุดรายวันทั่วไป (General Journal)
+                    </h2>
+                    <!-- ตัวเลือกกรอง รายวัน / รายเดือน / รายปี -->
+                    <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-lg border border-gray-200 text-xs">
+                        <span class="text-gray-500 pl-1 font-medium">มุมมอง:</span>
+                        <button onclick="filterJournal('daily')" id="filter-daily" class="px-2.5 py-1 rounded bg-red-600 text-white font-semibold">รายวัน</button>
+                        <button onclick="filterJournal('monthly')" id="filter-monthly" class="px-2.5 py-1 rounded text-gray-700 hover:bg-gray-200 font-semibold">รายเดือน</button>
+                        <button onclick="filterJournal('yearly')" id="filter-yearly" class="px-2.5 py-1 rounded text-gray-700 hover:bg-gray-200 font-semibold">รายปี</button>
+                    </div>
                 </div>
-            </div>
-        </section>
+
+                <!-- ตารางแสดงรายการเดบิต เครดิต -->
+                <div class="overflow-x-auto flex-grow max-h-[420px]">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-red-50 text-red-800 text-xs uppercase tracking-wider font-semibold sticky top-0">
+                                <th class="p-3 rounded-l-lg">วันที่ / รายการ</th>
+                                <th class="p-3">บัญชีแยกประเภท</th>
+                                <th class="p-3 text-right">เดบิต (Dr)</th>
+                                <th class="p-3 text-right rounded-r-lg">เครดิต (Cr)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="journalTableBody" class="text-sm divide-y divide-gray-100">
+                            <!-- Mockup Data 1 -->
+                            <tr class="hover:bg-gray-50" data-period="daily monthly yearly">
+                                <td class="p-3">
+                                    <div class="font-semibold text-gray-800">07 พ.ย. 2026</div>
+                                    <div class="text-xs text-gray-500">ซื้อสินค้า: บริษัท จรัญกิจ (INV-INV-2026-1105)</div>
+                                </td>
+                                <td class="p-3">
+                                    <div class="font-medium text-red-700">สินค้าคงเหลือ (Inventory)</div>
+                                    <div class="text-xs text-gray-500 pl-4">เครดิต: เจ้าหนี้การค้า</div>
+                                </td>
+                                <td class="p-3 text-right font-bold text-gray-900">15,000.00<br><span class="text-xs text-transparent">-</span></td>
+                                <td class="p-3 text-right font-bold text-gray-900"><span class="text-xs text-transparent">-</span><br>15,000.00</td>
+                            </tr>
+                            <!-- Mockup Data 2 -->
+                            <tr class="hover:bg-gray-50" data-period="daily monthly yearly">
+                                <td class="p-3">
+                                    <div class="font-semibold text-gray-800">07 พ.ย. 2026</div>
+                                    <div class="text-xs text-gray-500">ค่าระบบ: ค่าบริการระบบ POS</div>
+                                </td>
+                                <td class="p-3">
+                                    <div class="font-medium text-red-700">ค่าระบบ (Software Expense)</div>
+                                    <div class="text-xs text-gray-500 pl-4">เครดิต: เงินสด / ธนาคาร</div>
+                                </td>
+                                <td class="p-3 text-right font-bold text-gray-900">2,500.00<br><span class="text-xs text-transparent">-</span></td>
+                                <td class="p-3 text-right font-bold text-gray-900"><span class="text-xs text-transparent">-</span><br>2,500.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- สรุปผลรวม -->
+                <div class="mt-4 bg-gray-50 p-3 rounded-xl border border-gray-200 flex justify-between items-center text-sm font-bold">
+                    <span id="periodSummaryLabel" class="text-gray-700">สรุปยอดรวม (ประจำวัน):</span>
+                    <div class="flex gap-4">
+                        <span class="text-red-700">Dr: <span id="totalDebit">17,500.00</span> ฿</span>
+                        <span class="text-red-700">Cr: <span id="totalCredit">17,500.00</span> ฿ (Balanced ✓)</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ส่วนแสดงงบการเงิน (Financial Statements View - Hidden by default) -->
+            <section id="section-reports" class="bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col flex-grow hidden">
+                <div class="flex justify-between items-center border-b border-red-100 pb-3 mb-4">
+                    <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
+                        <span>📈</span> งบการเงินประจำรอบบัญชี (P&L & Balance Sheet)
+                    </h2>
+                    <span class="text-xs bg-red-50 text-red-600 px-3 py-1 rounded-full font-semibold">Mockup Real-time Data</span>
+                </div>
+
+                <div class="space-y-6 overflow-y-auto max-h-[420px] pr-2">
+                    <!-- งบกำไรขาดทุน (Income Statement) -->
+                    <div class="border border-red-100 rounded-xl p-4 bg-red-50/30">
+                        <h3 class="font-bold text-red-800 text-sm mb-3 flex items-center justify-between">
+                            <span>1. งบกำไรขาดทุน (Income Statement)</span>
+                            <span class="text-xs text-gray-500">สำหรับรอบบัญชี พฤศจิกายน 2026</span>
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between font-semibold text-gray-800">
+                                <span>รายได้จากการขายสินค้าสัตว์เลี้ยง (Sales Revenue)</span>
+                                <span class="text-emerald-700">+125,000.00 ฿</span>
+                            </div>
+                            <div class="flex justify-between text-gray-600 pl-4 text-xs">
+                                <span>หัก: ต้นทุนขายสินค้า (Cost of Goods Sold)</span>
+                                <span>-75,000.00 ฿</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-gray-800 border-t border-gray-200 pt-1">
+                                <span>กำไรขั้นต้น (Gross Profit)</span>
+                                <span>50,000.00 ฿</span>
+                            </div>
+                            <div class="flex justify-between text-gray-600 pl-4 text-xs">
+                                <span>หัก: ค่าใช้จ่ายในการดำเนินงาน (Operating Expenses)</span>
+                                <span id="plTotalExp">-(ค่าไฟฟ้า น้ำ ค่าระบบ รวม 12,500.00)</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-red-700 border-t border-red-200 pt-2 text-base">
+                                <span>กำไรสุทธิ (Net Profit)</span>
+                                <span id="plNetProfit">37,500.00 ฿</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- งบดุล (Balance Sheet) -->
+                    <div class="border border-red-100 rounded-xl p-4 bg-white">
+                        <h3 class="font-bold text-red-800 text-sm mb-3 flex items-center justify-between">
+                            <span>2. งบดุล / แสดงฐานะทางการเงิน (Balance Sheet)</span>
+                            <span class="text-xs text-gray-500">ณ วันที่ 7 พ.ย. 2026</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <!-- สินทรัพย์ -->
+                            <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                <div class="font-bold text-gray-800 mb-2 border-b pb-1">สินทรัพย์ (Assets)</div>
+                                <div class="flex justify-between text-xs py-1">
+                                    <span>เงินสดและเงินฝากธนาคาร</span>
+                                    <span>85,000.00 ฿</span>
+                                </div>
+                                <div class="flex justify-between text-xs py-1">
+                                    <span>สินค้าคงเหลือ (Inventory)</span>
+                                    <span id="bsInventory">15,000.00 ฿</span>
+                                </div>
+                                <div class="flex justify-between font-bold text-gray-800 border-t pt-1 mt-1 text-xs">
+                                    <span>รวมสินทรัพย์ทั้งหมด</span>
+                                    <span id="bsTotalAsset">100,000.00 ฿</span>
+                                </div>
+                            </div>
+                            <!-- หนี้สินและส่วนของเจ้าของ -->
+                            <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                <div class="font-bold text-gray-800 mb-2 border-b pb-1">หนี้สิน & ส่วนของเจ้าของ (Liabilities & Equity)</div>
+                                <div class="flex justify-between text-xs py-1">
+                                    <span>เจ้าหนี้การค้า (Accounts Payable)</span>
+                                    <span id="bsAP">15,000.00 ฿</span>
+                                </div>
+                                <div class="flex justify-between text-xs py-1">
+                                    <span>ทุนและกำไรสะสม</span>
+                                    <span>85,000.00 ฿</span>
+                                </div>
+                                <div class="flex justify-between font-bold text-gray-800 border-t pt-1 mt-1 text-xs">
+                                    <span>รวมหนี้สินและส่วนของเจ้าของ</span>
+                                    <span id="bsTotalLE">100,000.00 ฿</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
 
     </main>
 
-    <!-- JavaScript สำหรับควบคุมการสลับแท็บและการลงบัญชีอัตโนมัติ -->
+    <!-- Script ควบคุมการทำงานทั้งหมด -->
     <script>
-        function switchTab(tabName) {
-            const procTab = document.getElementById('tab-procurement');
-            const expTab = document.getElementById('tab-expense');
+        let totalDebitSum = 17500;
+        let totalCreditSum = 17500;
+
+        // สลับแท็บเมนูหลัก (รายวัน / ซื้อสินค้า / ค่าใช้จ่าย / งบการเงิน)
+        function switchMainTab(tab) {
+            const inputSection = document.getElementById('view-input-section');
+            const formProc = document.getElementById('form-procurement-container');
+            const formExp = document.getElementById('form-expense-container');
+            const secJournal = document.getElementById('section-journal');
+            const secReports = document.getElementById('section-reports');
+            
+            const btnJournal = document.getElementById('btn-journal');
             const btnProc = document.getElementById('btn-procurement');
             const btnExp = document.getElementById('btn-expense');
+            const btnReports = document.getElementById('btn-reports');
 
-            if(tabName === 'procurement') {
-                procTab.classList.remove('hidden');
-                expTab.classList.add('hidden');
-                btnProc.className = "px-4 py-2 text-xs font-bold rounded-lg transition duration-200 bg-white text-red-700 shadow";
-                btnExp.className = "px-4 py-2 text-xs font-bold rounded-lg transition duration-200 text-white hover:bg-red-700";
-            } else {
-                procTab.classList.add('hidden');
-                expTab.classList.remove('hidden');
-                btnExp.className = "px-4 py-2 text-xs font-bold rounded-lg transition duration-200 bg-white text-red-700 shadow";
-                btnProc.className = "px-4 py-2 text-xs font-bold rounded-lg transition duration-200 text-white hover:bg-red-700";
+            // Reset buttons style
+            [btnJournal, btnProc, btnExp, btnReports].forEach(b => {
+                b.className = "px-3 py-2 text-xs font-bold rounded-lg transition duration-200 text-white hover:bg-red-700";
+            });
+
+            if(tab === 'journal') {
+                inputSection.classList.remove('hidden');
+                formProc.classList.remove('hidden');
+                formExp.classList.add('hidden');
+                secJournal.classList.remove('hidden');
+                secReports.classList.add('hidden');
+                btnJournal.className = "px-3 py-2 text-xs font-bold rounded-lg transition duration-200 bg-white text-red-700 shadow";
+            } else if(tab === 'procurement') {
+                inputSection.classList.remove('hidden');
+                formProc.classList.remove('hidden');
+                formExp.classList.add('hidden');
+                secJournal.classList.remove('hidden');
+                secReports.classList.add('hidden');
+                btnProc.className = "px-3 py-2 text-xs font-bold rounded-lg transition duration-200 bg-white text-red-700 shadow";
+            } else if(tab === 'expense') {
+                inputSection.classList.remove('hidden');
+                formProc.classList.add('hidden');
+                formExp.classList.remove('hidden');
+                secJournal.classList.remove('hidden');
+                secReports.classList.add('hidden');
+                btnExp.className = "px-3 py-2 text-xs font-bold rounded-lg transition duration-200 bg-white text-red-700 shadow";
+            } else if(tab === 'reports') {
+                secJournal.classList.add('hidden');
+                secReports.classList.remove('hidden');
+                btnReports.className = "px-3 py-2 text-xs font-bold rounded-lg transition duration-200 bg-white text-red-700 shadow";
             }
         }
 
-        // ฟังก์ชันลงบัญชีซื้อสินค้า (Inventory / AP)
+        // กรองสมุดรายวัน (รายวัน / รายเดือน / รายปี)
+        function filterJournal(period) {
+            const btnD = document.getElementById('filter-daily');
+            const btnM = document.getElementById('filter-monthly');
+            const btnY = document.getElementById('filter-yearly');
+            const label = document.getElementById('periodSummaryLabel');
+
+            [btnD, btnM, btnY].forEach(b => {
+                b.className = "px-2.5 py-1 rounded text-gray-700 hover:bg-gray-200 font-semibold";
+            });
+
+            if(period === 'daily') {
+                btnD.className = "px-2.5 py-1 rounded bg-red-600 text-white font-semibold";
+                label.innerText = "สรุปยอดรวม (ประจำวัน):";
+            } else if(period === 'monthly') {
+                btnM.className = "px-2.5 py-1 rounded bg-red-600 text-white font-semibold";
+                label.innerText = "สรุปยอดรวม (ประจำเดือน พ.ย. 2026):";
+            } else if(period === 'yearly') {
+                btnY.className = "px-2.5 py-1 rounded bg-red-600 text-white font-semibold";
+                label.innerText = "สรุปยอดรวม (ประจำปี 2026):";
+            }
+        }
+
+        // ฟังก์ชันบันทึกซื้อสินค้า
         function processPurchaseEntry() {
             const supplier = document.getElementById('supplier').value;
             const category = document.getElementById('itemCategory').value;
@@ -286,48 +404,32 @@
             const paymentTerm = document.getElementById('paymentTerm').value;
             const isAudited = document.getElementById('auditCheck').checked;
 
-            if(!isAudited) {
-                alert('กรุณาตรวจสอบและติ๊กยืนยันการตรวจสอบเอกสาร (Audit) ก่อนลงบัญชี');
-                return;
-            }
+            if(!isAudited) { alert('กรุณายืนยันการตรวจสอบเอกสาร (Audit)'); return; }
 
-            const formattedAmount = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            const creditAccName = paymentTerm === 'credit' ? 'เจ้าหนี้การค้า (Accounts Payable)' : 'เงินสด / เงินฝากธนาคาร (Cash / Bank)';
+            const formatted = amount.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            const creditName = paymentTerm === 'credit' ? 'เจ้าหนี้การค้า (Accounts Payable)' : 'เงินสด / ธนาคาร';
             const today = new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
 
             const tbody = document.getElementById('journalTableBody');
-            const newRow = document.createElement('tr');
-            newRow.className = 'hover:bg-gray-50 animate-pulse';
-            
-            newRow.innerHTML = `
-                <td class="p-3">
-                    <div class="font-semibold text-gray-800">${today}</div>
-                    <div class="text-xs text-gray-500">ซื้อสินค้า: ${supplier} (${invoiceNo})</div>
-                </td>
-                <td class="p-3">
-                    <div class="font-medium text-red-700">1. สินค้าคงเหลือ (Inventory)</div>
-                    <div class="text-xs text-gray-500 pl-4">เครดิต: ${creditAccName}</div>
-                </td>
-                <td class="p-3 text-right font-bold text-gray-900">
-                    ${formattedAmount}<br>
-                    <span class="text-xs text-transparent">-</span>
-                </td>
-                <td class="p-3 text-right font-bold text-gray-900">
-                    <span class="text-xs text-transparent">-</span><br>
-                    ${formattedAmount}
-                </td>
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 animate-pulse';
+            row.innerHTML = `
+                <td class="p-3"><div class="font-semibold text-gray-800">${today}</div><div class="text-xs text-gray-500">ซื้อ: ${supplier} (${invoiceNo})</div></td>
+                <td class="p-3"><div class="font-medium text-red-700">สินค้าคงเหลือ (Inventory)</div><div class="text-xs text-gray-500 pl-4">เครดิต: ${creditName}</div></td>
+                <td class="p-3 text-right font-bold text-gray-900">${formatted}<br><span class="text-xs text-transparent">-</span></td>
+                <td class="p-3 text-right font-bold text-gray-900"><span class="text-xs text-transparent">-</span><br>${formatted}</td>
             `;
+            tbody.insertBefore(row, tbody.firstChild);
+            setTimeout(() => row.classList.remove('animate-pulse'), 1000);
 
-            tbody.insertBefore(newRow, tbody.firstChild);
-            setTimeout(() => newRow.classList.remove('animate-pulse'), 1000);
-
-            document.getElementById('totalDebit').innerText = formattedAmount;
-            document.getElementById('totalCredit').innerText = formattedAmount;
-            document.getElementById('entryStatus').innerText = 'ลงบัญชีซื้อสำเร็จ (Posted)';
-            document.getElementById('entryStatus').className = 'text-xs bg-red-100 text-red-800 px-3 py-1 rounded-full font-semibold border border-red-300';
+            totalDebitSum += amount;
+            totalCreditSum += amount;
+            document.getElementById('totalDebit').innerText = totalDebitSum.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            document.getElementById('totalCredit').innerText = totalCreditSum.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            alert('บันทึกรายการซื้อสินค้าลงสมุดรายวันสำเร็จ!');
         }
 
-        // ฟังก์ชันลงบัญชีค่าใช้จ่ายในร้าน (Expense Flow ตาม Flowchart ใหม่)
+        // ฟังก์ชันบันทึกค่าใช้จ่าย
         function processExpenseEntry() {
             const category = document.getElementById('expenseCategory').value;
             const desc = document.getElementById('expenseDesc').value;
@@ -336,45 +438,29 @@
             const paymentMethod = document.getElementById('expPaymentMethod').value;
             const isAudited = document.getElementById('expAuditCheck').checked;
 
-            if(!isAudited) {
-                alert('กรุณายืนยันการตรวจสอบความถูกต้องของรายการ (Audit Review) ก่อนลงบัญชี');
-                return;
-            }
+            if(!isAudited) { alert('กรุณายืนยันการตรวจสอบเอกสาร'); return; }
 
-            const formattedAmount = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            const creditAccName = paymentMethod === 'cash' ? 'เงินสด / เงินฝากธนาคาร (Cash / Bank)' : 'เจ้าหนี้อื่น / ค้างจ่าย (Other Accounts Payable)';
+            const formatted = amount.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            const creditName = paymentMethod === 'cash' ? 'เงินสด / ธนาคาร' : 'เจ้าหนี้อื่น / ค่าใช้จ่ายค้างจ่าย';
             const today = new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
 
             const tbody = document.getElementById('journalTableBody');
-            const newRow = document.createElement('tr');
-            newRow.className = 'hover:bg-gray-50 animate-pulse';
-            
-            newRow.innerHTML = `
-                <td class="p-3">
-                    <div class="font-semibold text-gray-800">${today}</div>
-                    <div class="text-xs text-gray-500">${category} (${refNo})</div>
-                </td>
-                <td class="p-3">
-                    <div class="font-medium text-red-700">1. ${category}</div>
-                    <div class="text-xs text-gray-500 pl-4">เครดิต: ${creditAccName}</div>
-                </td>
-                <td class="p-3 text-right font-bold text-gray-900">
-                    ${formattedAmount}<br>
-                    <span class="text-xs text-transparent">-</span>
-                </td>
-                <td class="p-3 text-right font-bold text-gray-900">
-                    <span class="text-xs text-transparent">-</span><br>
-                    ${formattedAmount}
-                </td>
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 animate-pulse';
+            row.innerHTML = `
+                <td class="p-3"><div class="font-semibold text-gray-800">${today}</div><div class="text-xs text-gray-500">${category}: ${desc} (${refNo})</div></td>
+                <td class="p-3"><div class="font-medium text-red-700">${category} (Expense)</div><div class="text-xs text-gray-500 pl-4">เครดิต: ${creditName}</div></td>
+                <td class="p-3 text-right font-bold text-gray-900">${formatted}<br><span class="text-xs text-transparent">-</span></td>
+                <td class="p-3 text-right font-bold text-gray-900"><span class="text-xs text-transparent">-</span><br>${formatted}</td>
             `;
+            tbody.insertBefore(row, tbody.firstChild);
+            setTimeout(() => row.classList.remove('animate-pulse'), 1000);
 
-            tbody.insertBefore(newRow, tbody.firstChild);
-            setTimeout(() => newRow.classList.remove('animate-pulse'), 1000);
-
-            document.getElementById('totalDebit').innerText = formattedAmount;
-            document.getElementById('totalCredit').innerText = formattedAmount;
-            document.getElementById('entryStatus').innerText = 'ลงบัญชีค่าใช้จ่ายสำเร็จ (Posted)';
-            document.getElementById('entryStatus').className = 'text-xs bg-red-100 text-red-800 px-3 py-1 rounded-full font-semibold border border-red-300';
+            totalDebitSum += amount;
+            totalCreditSum += amount;
+            document.getElementById('totalDebit').innerText = totalDebitSum.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            document.getElementById('totalCredit').innerText = totalCreditSum.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            alert('บันทึกค่าใช้จ่ายลงสมุดรายวันสำเร็จ!');
         }
     </script>
 </body>
