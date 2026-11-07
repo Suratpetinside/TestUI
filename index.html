@@ -19,7 +19,7 @@
                 <span class="bg-white text-red-700 font-bold p-2 rounded-lg shadow text-xl">🐾 Pet's Station</span>
                 <div>
                     <h1 class="text-xl font-bold">ระบบบัญชีเชื่อมโยงงบการเงินอัตโนมัติ (Automated Financial Linkage)</h1>
-                    <p class="text-xs text-red-200">บันทึกรายการซื้อมินิสต็อก/ค่าใช้จ่าย ลิงก์ตรงสู่งบกำไรขาดทุนและงบดุลแบบเรียลไทม์</p>
+                    <p class="text-xs text-red-200">บันทึกรายการซื้อมินิสต็อก/ค่าใช้จ่าย ลิงก์ตรงสู่งบกำไรขาดทุน งบดุล และกรองวันที่ได้ทันที</p>
                 </div>
             </div>
             <!-- Main Tab Navigation Switcher -->
@@ -41,7 +41,7 @@
     <main class="max-w-7xl mx-auto px-4 py-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
         
         <!-------------------------------------------------------------------->
-        <!-- ฝั่งซ้าย: ฟอร์มบันทึกรายการ (ซื้อมินิสต็อก หรือ ค่าใช้จ่าย) -->
+        <!-- ฝั่งซ้าย: ฟอร์มบันทึกรายการ -->
         <!-------------------------------------------------------------------->
         <div id="view-input-section" class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col justify-between">
             
@@ -55,6 +55,10 @@
                 </div>
                 
                 <form id="purchaseForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">วันที่ทำรายการ</label>
+                        <input type="date" id="txDate" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none" value="2026-11-07">
+                    </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">รหัสธุรกรรมสั่งซื้อ / ใบรับสินค้า (Transaction ID)</label>
                         <select id="txId" onchange="loadTransactionData()" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm font-semibold text-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none bg-red-50/50">
@@ -116,6 +120,10 @@
                 </div>
                 <form id="expenseForm" class="space-y-4">
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">วันที่จ่าย</label>
+                        <input type="date" id="expDate" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none" value="2026-11-07">
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">ประเภทค่าใช้จ่าย</label>
                         <select id="expenseCategory" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
                             <option value="ค่าไฟฟ้า">ค่าไฟฟ้า (Electricity)</option>
@@ -164,21 +172,21 @@
         </div>
 
         <!-------------------------------------------------------------------->
-        <!-- ฝั่งขวา: พื้นที่แสดงผลตารางสมุดรายวัน และ งบการเงินรายเดือน/รายปี -->
+        <!-- ฝั่งขวา: ตารางสมุดรายวัน และ งบการเงินรายเดือน/รายปี -->
         <!-------------------------------------------------------------------->
         <div class="lg:col-span-7 flex flex-col gap-4">
             
-            <!-- สมุดรายวันทั่วไป (General Journal) -->
+            <!-- สมุดรายวันทั่วไป (General Journal) พร้อมระบบกรองวันที่ปฏิทิน -->
             <section id="section-journal" class="bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col flex-grow">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-red-100 pb-3 mb-4 gap-2">
                     <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
                         <span>📊</span> สมุดรายวันทั่วไป (General Journal)
                     </h2>
-                    <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-lg border border-gray-200 text-xs">
-                        <span class="text-gray-500 pl-1 font-medium">มุมมอง:</span>
-                        <button onclick="filterJournal('daily')" id="filter-daily" class="px-2.5 py-1 rounded bg-red-600 text-white font-semibold">รายวัน</button>
-                        <button onclick="filterJournal('monthly')" id="filter-monthly" class="px-2.5 py-1 rounded text-gray-700 hover:bg-gray-200 font-semibold">รายเดือน</button>
-                        <button onclick="filterJournal('yearly')" id="filter-yearly" class="px-2.5 py-1 rounded text-gray-700 hover:bg-gray-200 font-semibold">รายปี</button>
+                    <!-- ตัวกรองปฏิทินวันที่ -->
+                    <div class="flex items-center gap-2 bg-gray-50 p-1.5 rounded-lg border border-gray-200 text-xs">
+                        <span class="text-gray-500 font-medium">กรองวันที่:</span>
+                        <input type="date" id="filterDateInput" onchange="filterJournalByDate()" class="border border-gray-300 rounded p-1 text-xs focus:ring-1 focus:ring-red-500">
+                        <button onclick="resetDateFilter()" class="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded text-gray-700 font-medium">แสดงทั้งหมด</button>
                     </div>
                 </div>
 
@@ -193,27 +201,16 @@
                             </tr>
                         </thead>
                         <tbody id="journalTableBody" class="text-sm divide-y divide-gray-100">
-                            <tr class="hover:bg-gray-50">
-                                <td class="p-3">
-                                    <div class="font-semibold text-gray-800">TX-2026-901</div>
-                                    <div class="text-xs text-gray-500">07 พ.ย. 2026 (บ. จรัญกิจ)</div>
-                                </td>
-                                <td class="p-3">
-                                    <div class="font-medium text-red-700">สินค้าคงเหลือ (Inventory)</div>
-                                    <div class="text-xs text-gray-500 pl-4">เครดิต: เจ้าหนี้การค้า</div>
-                                </td>
-                                <td class="p-3 text-right font-bold text-gray-900">15,000.00<br><span class="text-xs text-transparent">-</span></td>
-                                <td class="p-3 text-right font-bold text-gray-900"><span class="text-xs text-transparent">-</span><br>15,000.00</td>
-                            </tr>
+                            <!-- Data populated via JS -->
                         </tbody>
                     </table>
                 </div>
 
                 <div class="mt-4 bg-gray-50 p-3 rounded-xl border border-gray-200 flex justify-between items-center text-sm font-bold">
-                    <span id="periodSummaryLabel" class="text-gray-700">สรุปยอดรวม (ประจำวัน):</span>
+                    <span id="periodSummaryLabel" class="text-gray-700">สรุปยอดรวม (ทั้งหมด):</span>
                     <div class="flex gap-4">
-                        <span class="text-red-700">Dr: <span id="totalDebit">15,000.00</span> ฿</span>
-                        <span class="text-red-700">Cr: <span id="totalCredit">15,000.00</span> ฿ (Balanced ✓)</span>
+                        <span class="text-red-700">Dr: <span id="totalDebit">0.00</span> ฿</span>
+                        <span class="text-red-700">Cr: <span id="totalCredit">0.00</span> ฿ (Balanced ✓)</span>
                     </div>
                 </div>
             </section>
@@ -242,23 +239,23 @@
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-between font-semibold text-gray-800">
                                 <span>รายได้จากการขายสินค้า (Sales Revenue)</span>
-                                <span class="text-emerald-700">+125,000.00 ฿</span>
+                                <span id="plSales" class="text-emerald-700">+125,000.00 ฿</span>
                             </div>
                             <div class="flex justify-between text-gray-600 pl-4 text-xs">
                                 <span>หัก: ต้นทุนขายสินค้า (Cost of Goods Sold)</span>
-                                <span>-75,000.00 ฿</span>
+                                <span id="plCOGS">-75,000.00 ฿</span>
                             </div>
                             <div class="flex justify-between font-bold text-gray-800 border-t border-gray-200 pt-1">
                                 <span>กำไรขั้นต้น (Gross Profit)</span>
-                                <span>50,000.00 ฿</span>
+                                <span id="plGrossProfit">50,000.00 ฿</span>
                             </div>
                             <div class="flex justify-between text-gray-600 pl-4 text-xs">
                                 <span>หัก: ค่าใช้จ่ายในการดำเนินงาน (รวมค่าใช้จ่ายที่บันทึกเพิ่ม)</span>
-                                <span id="plDynamicExp">2,500.00 ฿</span>
+                                <span id="plDynamicExp">0.00 ฿</span>
                             </div>
                             <div class="flex justify-between font-bold text-red-700 border-t border-red-200 pt-2 text-base">
                                 <span>กำไรสุทธิ (Net Profit)</span>
-                                <span id="plNetProfit">47,500.00 ฿</span>
+                                <span id="plNetProfit">50,000.00 ฿</span>
                             </div>
                         </div>
                     </div>
@@ -278,28 +275,28 @@
                                     <span>85,000.00 ฿</span>
                                 </div>
                                 <div class="flex justify-between text-xs py-1">
-                                    <span>สินค้าคงเหลือ (Inventory - รับเข้าเพิ่ม)</span>
-                                    <span id="bsDynamicInventory">15,000.00 ฿</span>
+                                    <span>สินค้าคงเหลือ (Inventory - สะสม)</span>
+                                    <span id="bsDynamicInventory">0.00 ฿</span>
                                 </div>
                                 <div class="flex justify-between font-bold text-gray-800 border-t pt-1 mt-1 text-xs">
                                     <span>รวมสินทรัพย์ทั้งหมด</span>
-                                    <span id="bsTotalAsset">100,000.00 ฿</span>
+                                    <span id="bsTotalAsset">85,000.00 ฿</span>
                                 </div>
                             </div>
                             <!-- หนี้สินและส่วนของเจ้าของ -->
                             <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
                                 <div class="font-bold text-gray-800 mb-2 border-b pb-1">หนี้สิน & ส่วนของเจ้าของ (Liabilities & Equity)</div>
                                 <div class="flex justify-between text-xs py-1">
-                                    <span>เจ้าหนี้การค้า (Accounts Payable)</span>
-                                    <span id="bsDynamicAP">15,000.00 ฿</span>
+                                    <span>เจ้าหนี้การค้า (Accounts Payable - สะสม)</span>
+                                    <span id="bsDynamicAP">0.00 ฿</span>
                                 </div>
                                 <div class="flex justify-between text-xs py-1">
                                     <span>ทุนและกำไรสะสม</span>
-                                    <span id="bsEquity">85,000.00 ฿</span>
+                                    <span>85,000.00 ฿</span>
                                 </div>
                                 <div class="flex justify-between font-bold text-gray-800 border-t pt-1 mt-1 text-xs">
                                     <span>รวมหนี้สินและส่วนของเจ้าของ</span>
-                                    <span id="bsTotalLE">100,000.00 ฿</span>
+                                    <span id="bsTotalLE">85,000.00 ฿</span>
                                 </div>
                             </div>
                         </div>
@@ -311,25 +308,25 @@
 
     </main>
 
-    <!-- Script ควบคุมการลิงก์ข้อมูลอัตโนมัติ -->
+    <!-- Script ควบคุมการทำงานและการเชื่อมโยงข้อมูล -->
     <script>
-        let totalDebitSum = 15000;
-        let totalCreditSum = 15000;
-        
-        // ตัวแปรสะสมยอดสำหรับงบการเงิน
-        let accumulatedInventory = 15000;
-        let accumulatedAP = 15000;
-        let accumulatedExpenses = 0;
-        let baseSalesMonthly = 125000;
-        let baseSalesYearly = 1500000;
-        let baseCOGSMonthly = 75000;
-        let baseCOGSYearly = 900000;
+        // เก็บรายการสมุดรายวันทั้งหมด
+        let journalEntries = [
+            { date: "2026-11-07", id: "TX-2026-901", supplier: "บริษัท จรัญกิจ (Imperial Paw)", account: "สินค้าคงเหลือ (Inventory)", creditAcc: "เจ้าหนี้การค้า", amount: 15000, type: "procurement" },
+            { date: "2026-11-07", id: "EXP-2026-089", supplier: "ค่าบริการระบบ POS", account: "ค่าระบบ (Expense)", creditAcc: "เงินสด / ธนาคาร", amount: 2500, type: "expense" }
+        ];
+
         let currentReportMode = 'monthly';
 
         const transactionMockup = {
             "TX-2026-901": { supplier: "บริษัท จรัญกิจ (Imperial Paw)", invoice: "INV-2026-1105", items: "อาหารเม็ดแมว Imperial Paw (50 กระสอบ)", amount: 15000, term: "ซื้อเชื่อ (Credit 30 วัน)" },
             "TX-2026-902": { supplier: "ศรีไพศาลอาหารสัตว์", invoice: "INV-SRI-8892", items: "ทรายแมว Sunpo (100 ถุง)", amount: 28500, term: "ซื้อเชื่อ (Credit 30 วัน)" },
             "TX-2026-903": { supplier: "Royal Canin Thailand", invoice: "INV-RC-5541", items: "อาหารสุนัขพันธุ์เล็กสูตรพิเศษ (30 แพ็ค)", amount: 42000, term: "เงินสด / โอนชำระทันที" }
+        };
+
+        window.onload = function() {
+            renderJournalTable(journalEntries);
+            updateFinancialStatements();
         };
 
         function loadTransactionData() {
@@ -381,28 +378,6 @@
             }
         }
 
-        function filterJournal(period) {
-            const btnD = document.getElementById('filter-daily');
-            const btnM = document.getElementById('filter-monthly');
-            const btnY = document.getElementById('filter-yearly');
-            const label = document.getElementById('periodSummaryLabel');
-
-            [btnD, btnM, btnY].forEach(b => {
-                b.className = "px-2.5 py-1 rounded text-gray-700 hover:bg-gray-200 font-semibold";
-            });
-
-            if(period === 'daily') {
-                btnD.className = "px-2.5 py-1 rounded bg-red-600 text-white font-semibold";
-                label.innerText = "สรุปยอดรวม (ประจำวัน):";
-            } else if(period === 'monthly') {
-                btnM.className = "px-2.5 py-1 rounded bg-red-600 text-white font-semibold";
-                label.innerText = "สรุปยอดรวม (ประจำเดือน พ.ย. 2026):";
-            } else if(period === 'yearly') {
-                btnY.className = "px-2.5 py-1 rounded bg-red-600 text-white font-semibold";
-                label.innerText = "สรุปยอดรวม (ประจำปี 2026):";
-            }
-        }
-
         function switchReportPeriod(mode) {
             currentReportMode = mode;
             const btnM = document.getElementById('rep-monthly');
@@ -421,98 +396,140 @@
             updateFinancialStatements();
         }
 
-        // ฟังก์ชันประมวลผลรับสินค้า (ลิงก์เข้าสต็อกและงบดุล)
+        // ฟังก์ชันกรองสมุดรายวันตามวันที่เลือกจากปฏิทิน
+        function filterJournalByDate() {
+            const selectedDate = document.getElementById('filterDateInput').value;
+            if(!selectedDate) return;
+            const filtered = journalEntries.filter(item => item.date === selectedDate);
+            renderJournalTable(filtered);
+            document.getElementById('periodSummaryLabel').innerText = `สรุปยอดรวม (วันที่ ${selectedDate}):`;
+        }
+
+        function resetDateFilter() {
+            document.getElementById('filterDateInput').value = '';
+            renderJournalTable(journalEntries);
+            document.getElementById('periodSummaryLabel').innerText = "สรุปยอดรวม (ทั้งหมด):";
+        }
+
+        // เรนเดอร์ข้อมูลลงในตาราง
+        function renderJournalTable(dataArray) {
+            const tbody = document.getElementById('journalTableBody');
+            tbody.innerHTML = '';
+            let tDebit = 0;
+            let tCredit = 0;
+
+            dataArray.forEach(item => {
+                const formatted = item.amount.toLocaleString('en-US', { minimumFractionDigits: 2 });
+                tDebit += item.amount;
+                tCredit += item.amount;
+
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="p-3"><div class="font-semibold text-gray-800">${item.id}</div><div class="text-xs text-gray-500">${item.date} (${item.supplier})</div></td>
+                    <td class="p-3"><div class="font-medium text-red-700">${item.account}</div><div class="text-xs text-gray-500 pl-4">เครดิต: ${item.creditAcc}</div></td>
+                    <td class="p-3 text-right font-bold text-gray-900">${formatted}<br><span class="text-xs text-transparent">-</span></td>
+                    <td class="p-3 text-right font-bold text-gray-900"><span class="text-xs text-transparent">-</span><br>${formatted}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('totalDebit').innerText = tDebit.toLocaleString('en-US', { minimumFractionDigits: 2 });
+            document.getElementById('totalCredit').innerText = tCredit.toLocaleString('en-US', { minimumFractionDigits: 2 });
+        }
+
+        // ประมวลผลรับสินค้า (Inventory & Balance Sheet)
         function processAuditApproval() {
             const txId = document.getElementById('txId').value;
+            const dateStr = document.getElementById('txDate').value || "2026-11-07";
             const data = transactionMockup[txId];
             if(!document.getElementById('checkMatch').checked) {
                 alert('กรุณายืนยันจุดตรวจ Audit');
                 return;
             }
 
-            const formatted = data.amount.toLocaleString('en-US', { minimumFractionDigits: 2 });
             const creditName = data.term.includes('เงินสด') ? 'เงินสด / ธนาคาร' : 'เจ้าหนี้การค้า (Accounts Payable)';
-            const today = new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
 
-            const tbody = document.getElementById('journalTableBody');
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-50 animate-pulse';
-            row.innerHTML = `
-                <td class="p-3"><div class="font-semibold text-gray-800">${txId}</div><div class="text-xs text-gray-500">${today} (${data.supplier})</div></td>
-                <td class="p-3"><div class="font-medium text-red-700">สินค้าคงเหลือ (Inventory)</div><div class="text-xs text-gray-500 pl-4">เครดิต: ${creditName}</div></td>
-                <td class="p-3 text-right font-bold text-gray-900">${formatted}<br><span class="text-xs text-transparent">-</span></td>
-                <td class="p-3 text-right font-bold text-gray-900"><span class="text-xs text-transparent">-</span><br>${formatted}</td>
-            `;
-            tbody.insertBefore(row, tbody.firstChild);
-            setTimeout(() => row.classList.remove('animate-pulse'), 1000);
+            // เพิ่มเข้าข้อมูลรายวัน
+            journalEntries.unshift({
+                date: dateStr,
+                id: txId,
+                supplier: data.supplier,
+                account: "สินค้าคงเหลือ (Inventory)",
+                creditAcc: creditName,
+                amount: data.amount,
+                type: "procurement",
+                isCredit: !data.term.includes('เงินสด')
+            });
 
-            totalDebitSum += data.amount;
-            totalCreditSum += data.amount;
-            document.getElementById('totalDebit').innerText = totalDebitSum.toLocaleString('en-US', { minimumFractionDigits: 2 });
-            document.getElementById('totalCredit').innerText = totalCreditSum.toLocaleString('en-US', { minimumFractionDigits: 2 });
-
-            // อัปเดตยอดสะสมงบการเงิน
-            accumulatedInventory += data.amount;
-            if(!data.term.includes('เงินสด')) {
-                accumulatedAP += data.amount;
-            }
-
+            renderJournalTable(journalEntries);
+            updateFinancialStatements();
             alert('อนุมัติและบันทึกสินค้าเข้าสต็อก ลิงก์สู่งบการเงินสำเร็จ!');
         }
 
-        // ฟังก์ชันประมวลผลค่าใช้จ่าย (ลิงก์เข้ากำไรขาดทุน)
+        // ประมวลผลค่าใช้จ่าย (Expenses & P&L)
         function processExpenseEntry() {
             const category = document.getElementById('expenseCategory').value;
             const desc = document.getElementById('expenseDesc').value;
             const refNo = document.getElementById('expRefNo').value;
+            const dateStr = document.getElementById('expDate').value || "2026-11-07";
             const amount = parseFloat(document.getElementById('expAmount').value) || 0;
             const paymentMethod = document.getElementById('expPaymentMethod').value;
             
             if(!document.getElementById('expAuditCheck').checked) { alert('กรุณายืนยันการตรวจสอบ'); return; }
 
-            const formatted = amount.toLocaleString('en-US', { minimumFractionDigits: 2 });
-            const creditName = paymentMethod === 'cash' ? 'เงินสด / ธนาคาร' : 'เจ้าหนี้อื่น / ค้างจ่าย';
-            const today = new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+            const creditName = paymentMethod === 'cash' ? 'เงินสด / ธนาคาร' : 'เจ้าหนี้อื่น / ค่าใช้จ่ายค้างจ่าย';
 
-            const tbody = document.getElementById('journalTableBody');
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-50 animate-pulse';
-            row.innerHTML = `
-                <td class="p-3"><div class="font-semibold text-gray-800">${refNo}</div><div class="text-xs text-gray-500">${today} (${category})</div></td>
-                <td class="p-3"><div class="font-medium text-red-700">${category} (Expense)</div><div class="text-xs text-gray-500 pl-4">เครดิต: ${creditName}</div></td>
-                <td class="p-3 text-right font-bold text-gray-900">${formatted}<br><span class="text-xs text-transparent">-</span></td>
-                <td class="p-3 text-right font-bold text-gray-900"><span class="text-xs text-transparent">-</span><br>${formatted}</td>
-            `;
-            tbody.insertBefore(row, tbody.firstChild);
-            setTimeout(() => row.classList.remove('animate-pulse'), 1000);
+            journalEntries.unshift({
+                date: dateStr,
+                id: refNo,
+                supplier: desc,
+                account: `${category} (Expense)`,
+                creditAcc: creditName,
+                amount: amount,
+                type: "expense"
+            });
 
-            totalDebitSum += amount;
-            totalCreditSum += amount;
-            document.getElementById('totalDebit').innerText = totalDebitSum.toLocaleString('en-US', { minimumFractionDigits: 2 });
-            document.getElementById('totalCredit').innerText = totalCreditSum.toLocaleString('en-US', { minimumFractionDigits: 2 });
-
-            // อัปเดตยอดสะสมค่าใช้จ่าย
-            accumulatedExpenses += amount;
-
+            renderJournalTable(journalEntries);
+            updateFinancialStatements();
             alert('บันทึกค่าใช้จ่าย ลิงก์สู่งบกำไรขาดทุนสำเร็จ!');
         }
 
-        // คำนวณและอัปเดตตัวเลขอัตโนมัติในงบการเงิน
+        // คำนวณและอัปเดตตัวเลขในงบการเงินอัตโนมัติ
         function updateFinancialStatements() {
-            let sales = currentReportMode === 'monthly' ? baseSalesMonthly : baseSalesYearly;
-            let cogs = currentReportMode === 'monthly' ? baseCOGSMonthly : baseCOGSYearly;
-            let grossProfit = sales - cogs;
-            let totalExp = accumulatedExpenses + (currentReportMode === 'yearly' ? accumulatedExpenses * 11 : 0); // จำลองสเกลรายปีถ้าเป็นรายปี
-            let netProfit = grossProfit - totalExp;
+            let totalInventory = 0;
+            let totalAP = 0;
+            let totalExpenses = 0;
 
-            document.getElementById('plDynamicExp').innerText = totalExp.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            journalEntries.forEach(item => {
+                if(item.type === 'procurement') {
+                    totalInventory += item.amount;
+                    if(item.creditAcc.includes('เจ้าหนี้การค้า')) {
+                        totalAP += item.amount;
+                    }
+                } else if(item.type === 'expense') {
+                    totalExpenses += item.amount;
+                }
+            });
+
+            let baseSales = currentReportMode === 'monthly' ? 125000 : 1500000;
+            let baseCOGS = currentReportMode === 'monthly' ? 75000 : 900000;
+            let grossProfit = baseSales - baseCOGS;
+            let expMultiplier = currentReportMode === 'yearly' ? 12 : 1; 
+            let calculatedExp = totalExpenses * expMultiplier;
+            let netProfit = grossProfit - calculatedExp;
+
+            document.getElementById('plSales').innerText = "+" + baseSales.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('plCOGS').innerText = "-" + baseCOGS.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('plGrossProfit').innerText = grossProfit.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('plDynamicExp').innerText = calculatedExp.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
             document.getElementById('plNetProfit').innerText = netProfit.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
 
-            document.getElementById('bsDynamicInventory').innerText = accumulatedInventory.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
-            document.getElementById('bsDynamicAP').innerText = accumulatedAP.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
-            
-            let totalAsset = 85000 + accumulatedInventory;
-            let totalLE = accumulatedAP + 85000;
+            document.getElementById('bsDynamicInventory').innerText = totalInventory.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+            document.getElementById('bsDynamicAP').innerText = totalAP.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
+
+            let totalAsset = 85000 + totalInventory;
+            let totalLE = totalAP + 85000;
             document.getElementById('bsTotalAsset').innerText = totalAsset.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
             document.getElementById('bsTotalLE').innerText = totalLE.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " ฿";
         }
