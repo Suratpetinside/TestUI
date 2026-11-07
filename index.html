@@ -19,7 +19,7 @@
                 <span class="bg-white text-red-700 font-bold p-2 rounded-lg shadow text-xl">🐾 Pet's Station</span>
                 <div>
                     <h1 class="text-xl font-bold">ระบบบัญชีเชื่อมโยงงบการเงินอัตโนมัติ (Automated Financial Linkage)</h1>
-                    <p class="text-xs text-red-200">บันทึกรายการซื้อมินิสต็อก/ค่าใช้จ่าย ลิงก์ตรงสู่งบกำไรขาดทุน งบดุล และกรองวันที่ได้ทันที</p>
+                    <p class="text-xs text-red-200">บันทึกรายการซื้อมินิสต็อก/ค่าใช้จ่าย ลิงก์ตรงสู่งบกำไรขาดทุน งบดุล และกรองช่วงเวลาได้แม่นยำ</p>
                 </div>
             </div>
             <!-- Main Tab Navigation Switcher -->
@@ -40,9 +40,7 @@
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 py-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
         
-        <!-------------------------------------------------------------------->
         <!-- ฝั่งซ้าย: ฟอร์มบันทึกรายการ -->
-        <!-------------------------------------------------------------------->
         <div id="view-input-section" class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col justify-between">
             
             <!-- Sub-form Procurement (รับเข้าสินค้า) -->
@@ -171,26 +169,30 @@
 
         </div>
 
-        <!-------------------------------------------------------------------->
-        <!-- ฝั่งขวา: ตารางสมุดรายวัน และ งบการเงินรายเดือน/รายปี -->
-        <!-------------------------------------------------------------------->
+        <!-- ฝั่งขวา: ตารางสมุดรายวัน พร้อมกรองช่วงวันที่ (Start Date - End Date) -->
         <div class="lg:col-span-7 flex flex-col gap-4">
             
-            <!-- สมุดรายวันทั่วไป (General Journal) พร้อมระบบกรองวันที่ปฏิทิน -->
             <section id="section-journal" class="bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col flex-grow">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-red-100 pb-3 mb-4 gap-2">
+                <div class="flex flex-col justify-between items-start border-b border-red-100 pb-3 mb-4 gap-3">
                     <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
                         <span>📊</span> สมุดรายวันทั่วไป (General Journal)
                     </h2>
-                    <!-- ตัวกรองปฏิทินวันที่ -->
-                    <div class="flex items-center gap-2 bg-gray-50 p-1.5 rounded-lg border border-gray-200 text-xs">
-                        <span class="text-gray-500 font-medium">กรองวันที่:</span>
-                        <input type="date" id="filterDateInput" onchange="filterJournalByDate()" class="border border-gray-300 rounded p-1 text-xs focus:ring-1 focus:ring-red-500">
-                        <button onclick="resetDateFilter()" class="bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded text-gray-700 font-medium">แสดงทั้งหมด</button>
+                    <!-- ตัวกรองช่วงวันที่ (Start Date & End Date) -->
+                    <div class="flex flex-wrap items-center gap-2 bg-gray-50 p-2 rounded-xl border border-gray-200 text-xs w-full justify-between">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-gray-600 font-semibold">จากวันที่:</span>
+                            <input type="date" id="startDate" class="border border-gray-300 rounded p-1 text-xs focus:ring-1 focus:ring-red-500" value="2026-11-07">
+                            <span class="text-gray-600 font-semibold pl-2">ถึง:</span>
+                            <input type="date" id="endDate" class="border border-gray-300 rounded p-1 text-xs focus:ring-1 focus:ring-red-500" value="2026-11-07">
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="filterJournalByDateRange()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded font-semibold">ค้นหา</button>
+                            <button onclick="resetDateFilter()" class="bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-gray-700 font-medium">ล้างค่า</button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto flex-grow max-h-[380px]">
+                <div class="overflow-x-auto flex-grow max-h-[350px]">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-red-50 text-red-800 text-xs uppercase tracking-wider font-semibold sticky top-0">
@@ -207,7 +209,7 @@
                 </div>
 
                 <div class="mt-4 bg-gray-50 p-3 rounded-xl border border-gray-200 flex justify-between items-center text-sm font-bold">
-                    <span id="periodSummaryLabel" class="text-gray-700">สรุปยอดรวม (ทั้งหมด):</span>
+                    <span id="periodSummaryLabel" class="text-gray-700">สรุปยอดรวม (ช่วงวันที่เลือก):</span>
                     <div class="flex gap-4">
                         <span class="text-red-700">Dr: <span id="totalDebit">0.00</span> ฿</span>
                         <span class="text-red-700">Cr: <span id="totalCredit">0.00</span> ฿ (Balanced ✓)</span>
@@ -215,13 +217,12 @@
                 </div>
             </section>
 
-            <!-- งบการเงิน (P&L และ Balance Sheet แบบรายเดือนและรายปี) -->
+            <!-- งบการเงิน (P&L และ Balance Sheet) -->
             <section id="section-reports" class="bg-white p-6 rounded-2xl shadow-sm border border-red-100 flex flex-col flex-grow hidden">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-red-100 pb-3 mb-4 gap-2">
                     <h2 class="text-lg font-bold text-red-700 flex items-center gap-2">
                         <span>📈</span> งบกำไรขาดทุน & งบดุล (เชื่อมโยงอัตโนมัติ)
                     </h2>
-                    <!-- ตัวเลือกดูแบบรายเดือน หรือ รายปี -->
                     <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-lg border border-gray-200 text-xs">
                         <span class="text-gray-500 pl-1 font-medium">รอบรายงาน:</span>
                         <button onclick="switchReportPeriod('monthly')" id="rep-monthly" class="px-3 py-1 rounded bg-red-600 text-white font-semibold">สรุปรายเดือน (พ.ย. 2026)</button>
@@ -230,7 +231,7 @@
                 </div>
 
                 <div class="space-y-6 overflow-y-auto max-h-[400px] pr-2">
-                    <!-- งบกำไรขาดทุน (Income Statement) -->
+                    <!-- งบกำไรขาดทุน -->
                     <div class="border border-red-100 rounded-xl p-4 bg-red-50/30">
                         <h3 class="font-bold text-red-800 text-sm mb-3 flex items-center justify-between">
                             <span>1. งบกำไรขาดทุน (Income Statement)</span>
@@ -260,14 +261,13 @@
                         </div>
                     </div>
 
-                    <!-- งบดุล (Balance Sheet) -->
+                    <!-- งบดุล -->
                     <div class="border border-red-100 rounded-xl p-4 bg-white">
                         <h3 class="font-bold text-red-800 text-sm mb-3 flex items-center justify-between">
                             <span>2. งบดุล / แสดงฐานะทางการเงิน (Balance Sheet)</span>
                             <span id="bsPeriodTitle" class="text-xs text-gray-500">ณ สิ้นเดือน พฤศจิกายน 2026</span>
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            <!-- สินทรัพย์ -->
                             <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
                                 <div class="font-bold text-gray-800 mb-2 border-b pb-1">สินทรัพย์ (Assets)</div>
                                 <div class="flex justify-between text-xs py-1">
@@ -283,7 +283,6 @@
                                     <span id="bsTotalAsset">85,000.00 ฿</span>
                                 </div>
                             </div>
-                            <!-- หนี้สินและส่วนของเจ้าของ -->
                             <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
                                 <div class="font-bold text-gray-800 mb-2 border-b pb-1">หนี้สิน & ส่วนของเจ้าของ (Liabilities & Equity)</div>
                                 <div class="flex justify-between text-xs py-1">
@@ -308,9 +307,8 @@
 
     </main>
 
-    <!-- Script ควบคุมการทำงานและการเชื่อมโยงข้อมูล -->
+    <!-- Script ควบคุมการเชื่อมโยงงบการเงินและตัวกรองช่วงวันที่ -->
     <script>
-        // เก็บรายการสมุดรายวันทั้งหมด
         let journalEntries = [
             { date: "2026-11-07", id: "TX-2026-901", supplier: "บริษัท จรัญกิจ (Imperial Paw)", account: "สินค้าคงเหลือ (Inventory)", creditAcc: "เจ้าหนี้การค้า", amount: 15000, type: "procurement" },
             { date: "2026-11-07", id: "EXP-2026-089", supplier: "ค่าบริการระบบ POS", account: "ค่าระบบ (Expense)", creditAcc: "เงินสด / ธนาคาร", amount: 2500, type: "expense" }
@@ -325,7 +323,10 @@
         };
 
         window.onload = function() {
-            renderJournalTable(journalEntries);
+            // เซ็ตค่าช่องค้นหาวันที่เริ่มต้นและสิ้นสุดเป็นวันปัจจุบัน (2026-11-07)
+            document.getElementById('startDate').value = "2026-11-07";
+            document.getElementById('endDate').value = "2026-11-07";
+            filterJournalByDateRange();
             updateFinancialStatements();
         };
 
@@ -396,22 +397,25 @@
             updateFinancialStatements();
         }
 
-        // ฟังก์ชันกรองสมุดรายวันตามวันที่เลือกจากปฏิทิน
-        function filterJournalByDate() {
-            const selectedDate = document.getElementById('filterDateInput').value;
-            if(!selectedDate) return;
-            const filtered = journalEntries.filter(item => item.date === selectedDate);
+        // กรองสมุดรายวันตามช่วงเวลา (Start Date ถึง End Date) รองรับวันเดียวกันซ้อนกันได้
+        function filterJournalByDateRange() {
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+            
+            const filtered = journalEntries.filter(item => {
+                return item.date >= start && item.date <= end;
+            });
+
             renderJournalTable(filtered);
-            document.getElementById('periodSummaryLabel').innerText = `สรุปยอดรวม (วันที่ ${selectedDate}):`;
+            document.getElementById('periodSummaryLabel').innerText = `สรุปยอดรวม (ช่วงวันที่ ${start} ถึง ${end}):`;
         }
 
         function resetDateFilter() {
-            document.getElementById('filterDateInput').value = '';
-            renderJournalTable(journalEntries);
-            document.getElementById('periodSummaryLabel').innerText = "สรุปยอดรวม (ทั้งหมด):";
+            document.getElementById('startDate').value = "2026-11-07";
+            document.getElementById('endDate').value = "2026-11-07";
+            filterJournalByDateRange();
         }
 
-        // เรนเดอร์ข้อมูลลงในตาราง
         function renderJournalTable(dataArray) {
             const tbody = document.getElementById('journalTableBody');
             tbody.innerHTML = '';
@@ -438,7 +442,7 @@
             document.getElementById('totalCredit').innerText = tCredit.toLocaleString('en-US', { minimumFractionDigits: 2 });
         }
 
-        // ประมวลผลรับสินค้า (Inventory & Balance Sheet)
+        // บันทึกรับสินค้า ลิงก์ตรงสู่งบดุล
         function processAuditApproval() {
             const txId = document.getElementById('txId').value;
             const dateStr = document.getElementById('txDate').value || "2026-11-07";
@@ -450,7 +454,6 @@
 
             const creditName = data.term.includes('เงินสด') ? 'เงินสด / ธนาคาร' : 'เจ้าหนี้การค้า (Accounts Payable)';
 
-            // เพิ่มเข้าข้อมูลรายวัน
             journalEntries.unshift({
                 date: dateStr,
                 id: txId,
@@ -462,12 +465,12 @@
                 isCredit: !data.term.includes('เงินสด')
             });
 
-            renderJournalTable(journalEntries);
+            filterJournalByDateRange();
             updateFinancialStatements();
             alert('อนุมัติและบันทึกสินค้าเข้าสต็อก ลิงก์สู่งบการเงินสำเร็จ!');
         }
 
-        // ประมวลผลค่าใช้จ่าย (Expenses & P&L)
+        // บันทึกค่าใช้จ่าย ลิงก์ตรงสู่งบกำไรขาดทุน
         function processExpenseEntry() {
             const category = document.getElementById('expenseCategory').value;
             const desc = document.getElementById('expenseDesc').value;
@@ -478,7 +481,7 @@
             
             if(!document.getElementById('expAuditCheck').checked) { alert('กรุณายืนยันการตรวจสอบ'); return; }
 
-            const creditName = paymentMethod === 'cash' ? 'เงินสด / ธนาคาร' : 'เจ้าหนี้อื่น / ค่าใช้จ่ายค้างจ่าย';
+            const creditName = paymentMethod === 'cash' ? 'เงินสด / ธนาคาร' : 'เจ้าหนี้อื่น / ค้างจ่าย';
 
             journalEntries.unshift({
                 date: dateStr,
@@ -490,12 +493,12 @@
                 type: "expense"
             });
 
-            renderJournalTable(journalEntries);
+            filterJournalByDateRange();
             updateFinancialStatements();
             alert('บันทึกค่าใช้จ่าย ลิงก์สู่งบกำไรขาดทุนสำเร็จ!');
         }
 
-        // คำนวณและอัปเดตตัวเลขในงบการเงินอัตโนมัติ
+        // คำนวณยอดอัปเดตงบการเงินอัตโนมัติ 100%
         function updateFinancialStatements() {
             let totalInventory = 0;
             let totalAP = 0;
